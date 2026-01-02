@@ -116,7 +116,7 @@ const Index = () => {
             setIsResellerPopupOpen(true);
           }
         }}>
-          <DialogContent className="max-w-sm sm:max-w-md rounded-3xl border border-border/60 bg-background/95 backdrop-blur-sm shadow-lg shadow-primary/10 p-5 sm:p-6">
+          <DialogContent className="max-w-sm sm:max-w-md rounded-3xl border border-border/60 bg-background/95 backdrop-blur-sm shadow-lg shadow-primary/10 p-5 sm:p-6 pt-8 sm:pt-8">
             <DialogHeader className="space-y-3">
               <DialogTitle className="text-xl font-semibold leading-tight">
                 Ganhe dinheiro como revendedor
