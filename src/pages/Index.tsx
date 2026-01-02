@@ -5,7 +5,7 @@ import { useProducts } from "@/context/ProductContext";
 import { useStore } from "@/context/StoreContext";
 import { useStoreHours } from "@/hooks/useStoreHours";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import SearchSection from "@/components/home/SearchSection";
 import EasterEggAlert from "@/components/home/EasterEggAlert";
 import CategoryFilter from "@/components/home/CategoryFilter";
@@ -89,6 +89,15 @@ const Index = () => {
           {/* Banners rotativos de destaque (ex: entrega grátis) */}
           {/* @ts-ignore - componente utiliza campos opcionais de settings */}
           <StoreBanners />
+
+          <div className="mt-4 flex justify-center">
+            <Link to="/revendedor">
+              <Button variant="secondary" className="rounded-full px-6">
+                Seja um revendedor
+              </Button>
+            </Link>
+          </div>
+          
           
           {isLoading ? (
             <>
