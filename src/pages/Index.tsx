@@ -18,54 +18,48 @@ import { Sparkles } from "lucide-react";
 import { StoreBanners } from "@/components/home/StoreBanners";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 const Index = () => {
-  const { products, isLoading } = useProducts();
-  const { settings } = useStore();
-  const { isStoreOpen } = useStoreHours();
+  const {
+    products,
+    isLoading
+  } = useProducts();
+  const {
+    settings
+  } = useStore();
+  const {
+    isStoreOpen
+  } = useStoreHours();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const searchParam = queryParams.get('search');
-
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState(searchParam || "");
   const [showEasterEgg, setShowEasterEgg] = useState(false);
   const [isResellerPopupOpen, setIsResellerPopupOpen] = useState(false);
-
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      const matchesSearch = !searchTerm || 
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase());
-      
+    return products.filter(product => {
+      const matchesSearch = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase()) || product.description.toLowerCase().includes(searchTerm.toLowerCase()) || product.category.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = !selectedCategory || product.category === selectedCategory;
-      
       return matchesSearch && matchesCategory;
     });
   }, [products, searchTerm, selectedCategory]);
-
   const categories = useMemo(() => {
     return Array.from(new Set(products.map(product => product.category).filter(Boolean)));
   }, [products]);
-
   const featuredProducts = useMemo(() => {
     return products.filter(product => product.featured);
   }, [products]);
-
   useEffect(() => {
     if (searchParam) {
       setSearchTerm(searchParam);
     }
   }, [searchParam]);
-
   useEffect(() => {
     setShowEasterEgg(searchTerm.toLowerCase() === "cookie");
   }, [searchTerm]);
-
   useEffect(() => {
     const STORAGE_KEY = "reseller_popup_dismissed_at";
     const INITIAL_DELAY_MS = 10_000; // 10 segundos para abrir o popup
     const THIRTY_MINUTES = 30 * 60 * 1000;
-
     const timer = setTimeout(() => {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
@@ -75,16 +69,12 @@ const Index = () => {
           setIsResellerPopupOpen(true);
           return;
         }
-
         const lastDismissed = parseInt(stored, 10);
-
         if (Number.isNaN(lastDismissed)) {
           setIsResellerPopupOpen(true);
           return;
         }
-
         const shouldShowAgain = Date.now() - lastDismissed >= THIRTY_MINUTES;
-
         if (shouldShowAgain) {
           setIsResellerPopupOpen(true);
         }
@@ -93,52 +83,40 @@ const Index = () => {
         setIsResellerPopupOpen(true);
       }
     }, INITIAL_DELAY_MS);
-
     return () => clearTimeout(timer);
   }, []);
-
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
   }, []);
-
   const handleCategoryChange = useCallback((category: string | null) => {
     setSelectedCategory(category);
   }, []);
-
   const clearFilters = useCallback(() => {
     setSelectedCategory(null);
     setSearchTerm("");
   }, []);
-
   const hasNoResults = useMemo(() => {
     return (searchTerm || selectedCategory) && filteredProducts.length === 0;
   }, [searchTerm, selectedCategory, filteredProducts.length]);
-
   const showStoreClosedAlert = !settings.alwaysOpen && !isStoreOpen;
 
   // Show featured section only when no filters are active
   const showFeaturedSection = !searchTerm && !selectedCategory && featuredProducts.length > 0;
-
-  return (
-    <StoreLayout>
+  return <StoreLayout>
       <PageTransition>
-        <Dialog
-          open={isResellerPopupOpen}
-          onOpenChange={(open) => {
-            const STORAGE_KEY = "reseller_popup_dismissed_at";
-
-            if (!open) {
-              try {
-                localStorage.setItem(STORAGE_KEY, Date.now().toString());
-              } catch {
-                // ignore storage errors
-              }
-              setIsResellerPopupOpen(false);
-            } else {
-              setIsResellerPopupOpen(true);
-            }
-          }}
-        >
+        <Dialog open={isResellerPopupOpen} onOpenChange={open => {
+        const STORAGE_KEY = "reseller_popup_dismissed_at";
+        if (!open) {
+          try {
+            localStorage.setItem(STORAGE_KEY, Date.now().toString());
+          } catch {
+            // ignore storage errors
+          }
+          setIsResellerPopupOpen(false);
+        } else {
+          setIsResellerPopupOpen(true);
+        }
+      }}>
           <DialogContent className="max-w-sm sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Ganhe dinheiro como revendedor</DialogTitle>
@@ -147,47 +125,18 @@ const Index = () => {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-start">
-              <div className="flex-shrink-0 overflow-hidden rounded-xl bg-accent/10">
-                <img
-                  src="/placeholder.svg"
-                  alt="Ilustração de revendedor feliz com caixas de doces"
-                  className="h-32 w-32 object-cover sm:h-36 sm:w-36"
-                  loading="lazy"
-                />
-              </div>
-
-              <div className="space-y-3 text-sm text-muted-foreground">
-                <div className="rounded-xl bg-primary/5 p-3">
-                  <p className="text-xs font-medium uppercase tracking-wide text-primary">
-                    Destaque de comissão
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-foreground">
-                    Ganhe até 20% de comissão em cada venda realizada.
-                  </p>
-                </div>
-
-                <ul className="list-disc space-y-1 pl-4">
-                  <li>Catálogo completo de produtos com alta saída.</li>
-                  <li>Material de divulgação pronto para você usar.</li>
-                  <li>Suporte dedicado para tirar dúvidas e ajudar nas vendas.</li>
-                </ul>
-              </div>
-            </div>
+            
 
             <DialogFooter className="mt-4 flex flex-col sm:flex-row gap-2 sm:justify-end">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  const STORAGE_KEY = "reseller_popup_dismissed_at";
-                  try {
-                    localStorage.setItem(STORAGE_KEY, Date.now().toString());
-                  } catch {
-                    // ignore storage errors
-                  }
-                  setIsResellerPopupOpen(false);
-                }}
-              >
+              <Button variant="outline" onClick={() => {
+              const STORAGE_KEY = "reseller_popup_dismissed_at";
+              try {
+                localStorage.setItem(STORAGE_KEY, Date.now().toString());
+              } catch {
+                // ignore storage errors
+              }
+              setIsResellerPopupOpen(false);
+            }}>
                 Agora não
               </Button>
               <Link to="/revendedor" className="sm:ml-2">
@@ -204,26 +153,22 @@ const Index = () => {
           {/* @ts-ignore - componente utiliza campos opcionais de settings */}
           <StoreBanners />
           
-          {isLoading ? (
-            <>
+          {isLoading ? <>
               <SearchSkeleton />
               <CategoryFilterSkeleton />
-            </>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
+            </> : <motion.div initial={{
+          opacity: 0,
+          y: 10
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.3
+        }}>
               <SearchSection searchTerm={searchTerm} onSearchChange={handleSearchChange} />
               
-              <CategoryFilter 
-                categories={categories}
-                selectedCategory={selectedCategory}
-                onCategoryChange={handleCategoryChange}
-              />
-            </motion.div>
-          )}
+              <CategoryFilter categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
+            </motion.div>}
           
           
           <EasterEggAlert show={showEasterEgg} />
@@ -232,82 +177,62 @@ const Index = () => {
 
 
           {/* Featured Products Section */}
-          {!isLoading && showFeaturedSection && (
-            <motion.section 
-              className="mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-            >
+          {!isLoading && showFeaturedSection && <motion.section className="mb-8" initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.4,
+          delay: 0.1
+        }}>
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="h-5 w-5 text-primary" />
                 <h2 className="text-lg font-semibold text-foreground">Destaques</h2>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
-                {featuredProducts.slice(0, 4).map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                  >
+                {featuredProducts.slice(0, 4).map((product, index) => <motion.div key={product.id} initial={{
+              opacity: 0,
+              scale: 0.95
+            }} animate={{
+              opacity: 1,
+              scale: 1
+            }} transition={{
+              duration: 0.3,
+              delay: index * 0.05
+            }}>
                     <ProductCard product={product} />
-                  </motion.div>
-                ))}
+                  </motion.div>)}
               </div>
-            </motion.section>
-          )}
+            </motion.section>}
 
           {/* All Products Section */}
-          {isLoading ? (
-            <ProductGridSkeleton count={10} />
-          ) : (
-            <>
-              {showFeaturedSection && (
-                <div className="flex items-center gap-2 mb-4">
+          {isLoading ? <ProductGridSkeleton count={10} /> : <>
+              {showFeaturedSection && <div className="flex items-center gap-2 mb-4">
                   <h2 className="text-lg font-semibold text-foreground">Todos os Produtos</h2>
-                </div>
-              )}
-              <motion.div 
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3"
-                initial="initial"
-                animate="enter"
-                variants={staggerContainer}
-              >
-                {filteredProducts.map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    variants={staggerItem}
-                    custom={index}
-                  >
+                </div>}
+              <motion.div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3" initial="initial" animate="enter" variants={staggerContainer}>
+                {filteredProducts.map((product, index) => <motion.div key={product.id} variants={staggerItem} custom={index}>
                     <ProductCard product={product} />
-                  </motion.div>
-                ))}
+                  </motion.div>)}
               </motion.div>
-            </>
-          )}
+            </>}
 
-          {hasNoResults && !isLoading && (
-            <motion.div 
-              className="mt-8 sm:mt-12 text-center py-6 sm:py-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
+          {hasNoResults && !isLoading && <motion.div className="mt-8 sm:mt-12 text-center py-6 sm:py-8" initial={{
+          opacity: 0
+        }} animate={{
+          opacity: 1
+        }} transition={{
+          delay: 0.2
+        }}>
               <p className="text-lg text-muted-foreground">Nenhum produto encontrado.</p>
-              <Button 
-                variant="outline" 
-                onClick={clearFilters} 
-                className="mt-4 rounded-xl"
-              >
+              <Button variant="outline" onClick={clearFilters} className="mt-4 rounded-xl">
                 Limpar filtros
               </Button>
-            </motion.div>
-          )}
+            </motion.div>}
         </div>
       </PageTransition>
-    </StoreLayout>
-  );
+    </StoreLayout>;
 };
-
 export default Index;
