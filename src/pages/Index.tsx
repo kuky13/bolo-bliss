@@ -89,15 +89,6 @@ const Index = () => {
           {/* Banners rotativos de destaque (ex: entrega grátis) */}
           {/* @ts-ignore - componente utiliza campos opcionais de settings */}
           <StoreBanners />
-
-          <div className="mt-4 flex justify-center">
-            <Link to="/revendedor">
-              <Button variant="secondary" className="rounded-full px-6">
-                Seja um revendedor
-              </Button>
-            </Link>
-          </div>
-          
           
           {isLoading ? (
             <>
@@ -117,6 +108,14 @@ const Index = () => {
                 selectedCategory={selectedCategory}
                 onCategoryChange={handleCategoryChange}
               />
+
+              <div className="mt-4 flex justify-center">
+                <Link to="/revendedor">
+                  <Button variant="secondary" className="rounded-full px-6">
+                    Seja um revendedor
+                  </Button>
+                </Link>
+              </div>
             </motion.div>
           )}
           
