@@ -16,6 +16,7 @@ import { PageTransition, staggerContainer, staggerItem } from "@/components/layo
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { StoreBanners } from "@/components/home/StoreBanners";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 const Index = () => {
   const { products, isLoading } = useProducts();
   const { settings } = useStore();
@@ -27,6 +28,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState(searchParam || "");
   const [showEasterEgg, setShowEasterEgg] = useState(false);
+  const [isResellerPopupOpen, setIsResellerPopupOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -59,6 +61,35 @@ const Index = () => {
     setShowEasterEgg(searchTerm.toLowerCase() === "cookie");
   }, [searchTerm]);
 
+  useEffect(() => {
+    const STORAGE_KEY = "reseller_popup_dismissed_at";
+
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+
+      if (!stored) {
+        setIsResellerPopupOpen(true);
+        return;
+      }
+
+      const lastDismissed = parseInt(stored, 10);
+
+      if (Number.isNaN(lastDismissed)) {
+        setIsResellerPopupOpen(true);
+        return;
+      }
+
+      const THIRTY_MINUTES = 30 * 60 * 1000;
+      const shouldShowAgain = Date.now() - lastDismissed >= THIRTY_MINUTES;
+
+      if (shouldShowAgain) {
+        setIsResellerPopupOpen(true);
+      }
+    } catch {
+      setIsResellerPopupOpen(true);
+    }
+  }, []);
+
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
   }, []);
@@ -84,6 +115,53 @@ const Index = () => {
   return (
     <StoreLayout>
       <PageTransition>
+        <Dialog
+          open={isResellerPopupOpen}
+          onOpenChange={(open) => {
+            const STORAGE_KEY = "reseller_popup_dismissed_at";
+
+            if (!open) {
+              try {
+                localStorage.setItem(STORAGE_KEY, Date.now().toString());
+              } catch {
+                // ignore storage errors
+              }
+              setIsResellerPopupOpen(false);
+            } else {
+              setIsResellerPopupOpen(true);
+            }
+          }}
+        >
+          <DialogContent className="max-w-sm sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Seja um revendedor</DialogTitle>
+              <DialogDescription>
+                Ganhe dinheiro revendendo nossos produtos deliciosos. Veja as condições especiais para revendedores.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const STORAGE_KEY = "reseller_popup_dismissed_at";
+                  try {
+                    localStorage.setItem(STORAGE_KEY, Date.now().toString());
+                  } catch {
+                    // ignore storage errors
+                  }
+                  setIsResellerPopupOpen(false);
+                }}
+              >
+                Agora não
+              </Button>
+              <Link to="/revendedor" className="sm:ml-2">
+                <Button>
+                  Quero ser revendedor
+                </Button>
+              </Link>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <div className="container max-w-7xl mx-auto px-3 py-4 sm:py-6">
           <AffiliateIndicator />
           {/* Banners rotativos de destaque (ex: entrega grátis) */}
@@ -108,16 +186,9 @@ const Index = () => {
                 selectedCategory={selectedCategory}
                 onCategoryChange={handleCategoryChange}
               />
-
-              <div className="mt-4 flex justify-center">
-                <Link to="/revendedor">
-                  <Button variant="secondary" className="rounded-full px-6">
-                    Seja um revendedor
-                  </Button>
-                </Link>
-              </div>
             </motion.div>
           )}
+          
           
           <EasterEggAlert show={showEasterEgg} />
           
