@@ -102,7 +102,7 @@ const Revendedor: React.FC = () => {
                 <ul className="list-disc list-inside space-y-1">
                   <li>Dicas de como vender mais na sua região</li>
                   <li>Sugestões de kits e combinações de produtos</li>
-                  <li>Contato direto com o Cantinho da Ysa pelo WhatsApp</li>
+                  <li>Contato direto com a Ysa pelo WhatsApp</li>
                 </ul>
               </CardContent>
             </Card>
