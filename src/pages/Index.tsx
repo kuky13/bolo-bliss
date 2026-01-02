@@ -118,10 +118,6 @@ const Index = () => {
         }}>
           <DialogContent className="max-w-sm sm:max-w-md rounded-3xl border border-border/60 bg-background/95 backdrop-blur-sm shadow-lg shadow-primary/10 p-5 sm:p-6">
             <DialogHeader className="space-y-3">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                <Sparkles className="h-3 w-3" />
-                <span>Oportunidade exclusiva</span>
-              </div>
               <DialogTitle className="text-xl font-semibold leading-tight">
                 Ganhe dinheiro como revendedor
               </DialogTitle>
@@ -134,7 +130,7 @@ const Index = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="self-start px-0 text-xs font-normal text-muted-foreground hover:bg-transparent hover:text-foreground"
+                className="self-start px-0 text-xs font-medium text-muted-foreground hover:bg-transparent hover:text-primary hover:underline underline-offset-4"
                 onClick={() => {
                   const STORAGE_KEY = "reseller_popup_dismissed_at";
                   try {
