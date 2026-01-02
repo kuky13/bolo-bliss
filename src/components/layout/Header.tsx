@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Menu, ArrowRight, Home, User, LogOut, Settings, Gamepad2, LayoutDashboard, Package2, Candy, CreditCard, ChevronRight } from "lucide-react";
+import { ShoppingCart, Menu, ArrowRight, Home, User, LogOut, Settings, Gamepad2, LayoutDashboard, Package2, Candy, CreditCard, ChevronRight, Store } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
 import { useAuth } from "@/context/AuthContext";

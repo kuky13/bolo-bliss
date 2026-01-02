@@ -18,6 +18,7 @@ const PaymentPending = lazy(() => import("./pages/PaymentPending"));
 const PaymentFailure = lazy(() => import("./pages/PaymentFailure"));
 const GameEasterEgg = lazy(() => import("./pages/GameEasterEgg"));
 const AffiliateTracker = lazy(() => import("./pages/AffiliateTracker").then(module => ({ default: module.AffiliateTracker })));
+const Revendedor = lazy(() => import("./pages/Revendedor"));
 
 // Affiliate Pages (ValeDoce)
 const AffiliateCredits = lazy(() => import("./pages/affiliate/Credits"));
@@ -59,6 +60,7 @@ const AnimatedRoutes = () => {
         <Route path="/payment/pending" element={<PaymentPending />} />
         <Route path="/payment/failure" element={<PaymentFailure />} />
         <Route path="/easteregg" element={<GameEasterEgg />} />
+        <Route path="/revendedor" element={<Revendedor />} />
         
         {/* Affiliate Routes (legacy) */}
         <Route path="/afiliado/:code" element={<AffiliateTracker />} />
