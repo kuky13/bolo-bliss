@@ -1,0 +1,41 @@
+
+[
+  {
+    "id": "1",
+    "name": "Bolo de Brigadeiro",
+    "description": "Delicioso bolo de Pote de brigadeiro caseiro",
+    "price": 14.00,
+    "imageUrl": "https://cdn.glitch.global/fe6a551e-ecc6-4a89-8b13-a725f164e224/brigadeiro.png?v=1747494069195",
+    "featured": true,
+    "category": "Bolos",
+    
+    "___AJUDA___": "Para adicionar um novo produto, copie todo o bloco entre { e } incluindo as chaves, e cole abaixo, alterando os valores. Não esqueça de adicionar uma vírgula após o bloco anterior."
+  },
+  {
+    "id": "2",
+    "name": "Bolo de Ninho com Nutella", 
+    "description": "Cupcake de ninho com cobertura de Nutella",
+    "price": 14.90,
+    "imageUrl": "https://cdn.glitch.global/fe6a551e-ecc6-4a89-8b13-a725f164e224/brigadeiro.png?v=1747494069195",
+    "featured": false,
+    "category": "Bolos"
+  },
+  {
+    "id": "3",
+    "name": "Bolo de Prestígio",
+    "description": "Bolo de Prestígio delicioso coco e chocolate",
+    "price": 14.00,
+    "imageUrl": "https://cdn.glitch.global/fe6a551e-ecc6-4a89-8b13-a725f164e224/prestigio.png?v=1747494069195",
+    "featured": true,
+    "category": "Bolos"
+  },
+  {
+    "id": "4",
+    "name": "Brownie",
+    "description": "Brownie super chocolatudo com nozes",
+    "price": 14.00,
+    "imageUrl": "https://cdn.glitch.global/fe6a551e-ecc6-4a89-8b13-a725f164e224/brigadeiro.png?v=1747494069195",
+    "featured": false,
+    "category": "Doces"
+  }
+]

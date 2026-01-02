@@ -1,0 +1,29 @@
+
+{
+  "colors": {
+    "primary": "#ff7eb9",
+    "secondary": "#f2c0d5",
+    "accent": "#fec832",
+    "background": "#ffffff",
+    "text": "#333333"
+  },
+  "fonts": {
+    "main": "Poppins, sans-serif",
+    "headings": "Poppins, sans-serif"
+  },
+  "layout": {
+    "maxWidth": "1200px",
+    "borderRadius": "8px"
+  },
+  
+  "___AJUDA___": {
+    "colors": "Códigos de cores em formato hexadecimal (#RRGGBB)",
+    "primary": "Cor principal do tema (botões, links, etc)",
+    "secondary": "Cor secundária (elementos menos importantes)",
+    "accent": "Cor de destaque (para chamar atenção)",
+    "background": "Cor de fundo do site",
+    "text": "Cor do texto principal",
+    "fonts": "Fontes usadas no site (já devem estar importadas)",
+    "layout": "Configurações de layout do site"
+  }
+}

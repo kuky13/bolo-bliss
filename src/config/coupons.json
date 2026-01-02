@@ -1,0 +1,21 @@
+
+[
+  {
+    "code": "BEMVINDO10",
+    "discountType": "percentage",
+    "discountValue": 10,
+    "minOrderValue": 0,
+    "active": true,
+    "description": "10% de desconto na sua primeira compra",
+    
+    "___AJUDA___": "Para adicionar um novo cupom, copie todo o bloco entre { e } incluindo as chaves, e cole abaixo, alterando os valores. Não esqueça de adicionar uma vírgula após o bloco anterior. O discountType deve ser 'percentage' para porcentagem ou 'fixed' para valor fixo em reais."
+  },
+  {
+    "code": "FRETEGRATIS",
+    "discountType": "fixed",
+    "discountValue": 9,
+    "minOrderValue": 40,
+    "active": true,
+    "description": "Frete grátis para compras acima de R$40"
+  }
+]

@@ -1,0 +1,39 @@
+
+[
+  {
+    "id": "1",
+    "name": "Bolo de Chocolate",
+    "description": "Delicioso bolo de chocolate caseiro com cobertura de ganache",
+    "price": 35.90,
+    "imageUrl": "/placeholder.svg",
+    "featured": true,
+    "category": "Bolos"
+  },
+  {
+    "id": "2",
+    "name": "Cupcake de Baunilha",
+    "description": "Cupcake de baunilha com cobertura de buttercream",
+    "price": 8.90,
+    "imageUrl": "/placeholder.svg",
+    "featured": false,
+    "category": "Cupcakes"
+  },
+  {
+    "id": "3",
+    "name": "Bolo de Morango",
+    "description": "Bolo de baunilha com recheio de morango fresco",
+    "price": 39.90,
+    "imageUrl": "/placeholder.svg",
+    "featured": true,
+    "category": "Bolos"
+  },
+  {
+    "id": "4",
+    "name": "Brownie",
+    "description": "Brownie super chocolatudo com nozes",
+    "price": 6.90,
+    "imageUrl": "/placeholder.svg",
+    "featured": false,
+    "category": "Doces"
+  }
+]

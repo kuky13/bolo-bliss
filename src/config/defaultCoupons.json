@@ -1,0 +1,19 @@
+
+[
+  {
+    "code": "BEMVINDO10",
+    "discountType": "percentage",
+    "discountValue": 10,
+    "minOrderValue": 0,
+    "active": true,
+    "description": "10% de desconto na sua primeira compra"
+  },
+  {
+    "code": "FRETEGRATIS",
+    "discountType": "fixed",
+    "discountValue": 9,
+    "minOrderValue": 40,
+    "active": true,
+    "description": "Frete grátis para compras acima de R$40"
+  }
+]

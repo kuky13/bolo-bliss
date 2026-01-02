@@ -1,0 +1,28 @@
+
+{
+  "storeName": "Cantinho da Ysa",
+  "whatsappNumber": "5511999999999",
+  "deliveryFee": 10,
+  "freeDeliveryThreshold": 50,
+  "welcomeMessage": "Bem-vindo à nossa loja online!",
+  "footerMessage": "© 2026 Cantinho da Ysa - Todos os direitos reservados",
+  "customCakeMessage": "Descreva seu bolo personalizado e entraremos em contato com um orçamento.",
+  "announcements": [],
+  "freeDeliveryMessage": "Entrega Grátis acima de R$ 50",
+  "showFreeDeliveryBanner": true,
+  "freeDeliveryBanners": [
+    {
+      "id": "default-1",
+      "text": "Entrega Grátis acima de R$ 50",
+      "bgColor": "bg-store-yellow",
+      "textColor": "text-store-pink"
+    }
+  ],
+  "bannerRotationInterval": 5,
+  "alwaysOpen": false,
+  "storeClosedMessage": "Estamos fechados no momento. Confira nossos horários de funcionamento.",
+  "socialMedia": {
+    "instagram": "https://instagram.com/minhaloja",
+    "whatsapp": "https://wa.me/5511999999999"
+  }
+}

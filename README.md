@@ -1,73 +1,69 @@
-# Welcome to your Lovable project
 
-## Project info
+# 🧁 Loja Virtual
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🎉 Bem-vindo à sua loja online!
 
-## How can I edit this code?
+Este projeto foi criado com ajuda de IA para facilitar a venda de seus produtos online.
 
-There are several ways of editing your application.
+## 📝 Como editar seu site
 
-**Use Lovable**
+### Maneira mais simples (pasta config):
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+1. Navegue até a pasta `src/config`
+2. Lá você encontrará arquivos simples para editar:
+   - `store.json` - Configurações básicas da loja
+   - `appearance.json` - Aparência do site (cores, fontes)
+   
+3. Abra o arquivo README.md nessa pasta para instruções detalhadas
 
-Changes made via Lovable will be committed automatically to this repo.
+### Maneira alternativa (arquivos de dados):
 
-**Use your preferred IDE**
+1. Navegue até a pasta `src/data`
+2. Lá você encontrará os arquivos:
+   - `initialProducts.json` - Lista de produtos
+   - `defaultSettings.json` - Configurações da loja
+   - `defaultCoupons.json` - Cupons de desconto
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Para editar usando o painel administrativo:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Acesse o site
+2. Faça login na área administrativa (/login)
+3. Use as credenciais padrão (verifique com o administrador)
+4. Navegue até a seção "Configurações"
 
-Follow these steps:
+## 🔧 Informações Técnicas
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Este projeto é construído com:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- React - Framework JavaScript
+- TypeScript - Linguagem de programação
+- Tailwind CSS - Framework de estilos
+- shadcn/ui - Biblioteca de componentes
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🚀 Recursos Disponíveis
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+- ✅ Catálogo de produtos
+- ✅ Carrinho de compras
+- ✅ Checkout simplificado
+- ✅ Integração com WhatsApp
+- ✅ Painel administrativo
+- ✅ Design responsivo (funciona em celulares e computadores)
+- ✅ Cupons de desconto
 
-**Edit a file directly in GitHub**
+## 💰 Sistema de Cupons
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+A loja possui um sistema completo de cupons de desconto:
 
-**Use GitHub Codespaces**
+- Criar cupons com desconto percentual ou valor fixo
+- Definir valor mínimo de compra para o cupom
+- Limite de uso e data de expiração
+- Ativar/desativar cupons
+- Fácil gerenciamento no painel administrativo
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📱 Redes Sociais
 
-## What technologies are used for this project?
+Você pode conectar suas redes sociais através do arquivo de configurações ou do painel administrativo.
 
-This project is built with:
+## 📞 Suporte
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Se tiver dificuldades para editar seu site, consulte o guia na pasta `src/config` ou entre em contato com o suporte técnico.

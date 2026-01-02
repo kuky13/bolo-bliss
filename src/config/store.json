@@ -1,0 +1,29 @@
+
+{
+  "storeName": "Cantinho da Ysa",
+  "whatsappNumber": "5564999421093",
+  "deliveryFee": 9,
+  "freeDeliveryThreshold": 28,
+  "welcomeMessage": "",
+  "footerMessage": "Feito com amor❤️",
+  "customCakeMessage": "Descreva seu bolo personalizado e entraremos em contato com um orçamento.",
+  "announcements": [
+    "Entrega Grátis acima de R$ 28"
+  ],
+  "socialMedia": {
+    "instagram": "https://instagram.com/cantinhoda.ysa",
+    "whatsapp": "https://wa.me/5564999421093"
+  },
+  
+  "___AJUDA___": {
+    "storeName": "Nome da sua loja que aparece no site",
+    "whatsappNumber": "Seu número de WhatsApp com código do país (55) + DDD + número, sem espaços",
+    "deliveryFee": "Taxa de entrega em reais (use números inteiros ou com ponto)",
+    "freeDeliveryThreshold": "Valor mínimo para entrega grátis (coloque 0 para desativar)",
+    "welcomeMessage": "Mensagem que aparece no topo da página inicial (pode ficar vazio)",
+    "footerMessage": "Mensagem que aparece no rodapé de todas as páginas",
+    "customCakeMessage": "Texto que aparece no formulário de bolos personalizados",
+    "announcements": "Lista de avisos que aparecem no topo da página inicial (deixe vazio para não mostrar)",
+    "socialMedia": "Links para suas redes sociais (deixe em branco se não tiver)"
+  }
+}

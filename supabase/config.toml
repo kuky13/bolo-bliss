@@ -1,0 +1,25 @@
+project_id = "jmgrseqvrarrfcyurlwh"
+
+[functions.send-valedoce-notification]
+verify_jwt = false
+
+[functions.delete-affiliate]
+verify_jwt = false
+
+[functions.create-payment-preference]
+verify_jwt = false
+
+[functions.mercadopago-webhook]
+verify_jwt = false
+
+[functions.send-order-receipt]
+verify_jwt = false
+
+[functions.send-admin-order-notification]
+verify_jwt = false
+
+[functions.confirm-cash-payment]
+verify_jwt = false
+
+[functions.cancel-payment]
+verify_jwt = false
