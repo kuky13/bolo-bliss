@@ -58,32 +58,31 @@ const Index = () => {
   }, [searchTerm]);
   useEffect(() => {
     const STORAGE_KEY = "reseller_popup_dismissed_at";
-    const INITIAL_DELAY_MS = 10_000; // 10 segundos para abrir o popup
     const THIRTY_MINUTES = 30 * 60 * 1000;
-    const timer = setTimeout(() => {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY);
 
-        // Nunca foi fechado antes: mostra após 10s
-        if (!stored) {
-          setIsResellerPopupOpen(true);
-          return;
-        }
-        const lastDismissed = parseInt(stored, 10);
-        if (Number.isNaN(lastDismissed)) {
-          setIsResellerPopupOpen(true);
-          return;
-        }
-        const shouldShowAgain = Date.now() - lastDismissed >= THIRTY_MINUTES;
-        if (shouldShowAgain) {
-          setIsResellerPopupOpen(true);
-        }
-      } catch {
-        // Em caso de erro no localStorage, ainda tentamos mostrar o popup
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+
+      // Nunca foi fechado antes: mostra imediatamente
+      if (!stored) {
+        setIsResellerPopupOpen(true);
+        return;
+      }
+
+      const lastDismissed = parseInt(stored, 10);
+      if (Number.isNaN(lastDismissed)) {
+        setIsResellerPopupOpen(true);
+        return;
+      }
+
+      const shouldShowAgain = Date.now() - lastDismissed >= THIRTY_MINUTES;
+      if (shouldShowAgain) {
         setIsResellerPopupOpen(true);
       }
-    }, INITIAL_DELAY_MS);
-    return () => clearTimeout(timer);
+    } catch {
+      // Em caso de erro no localStorage, ainda tentamos mostrar o popup
+      setIsResellerPopupOpen(true);
+    }
   }, []);
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
