@@ -104,42 +104,51 @@ const Index = () => {
   return <StoreLayout>
       <PageTransition>
         <Dialog open={isResellerPopupOpen} onOpenChange={open => {
-        const STORAGE_KEY = "reseller_popup_dismissed_at";
-        if (!open) {
-          try {
-            localStorage.setItem(STORAGE_KEY, Date.now().toString());
-          } catch {
-            // ignore storage errors
+          const STORAGE_KEY = "reseller_popup_dismissed_at";
+          if (!open) {
+            try {
+              localStorage.setItem(STORAGE_KEY, Date.now().toString());
+            } catch {
+              // ignore storage errors
+            }
+            setIsResellerPopupOpen(false);
+          } else {
+            setIsResellerPopupOpen(true);
           }
-          setIsResellerPopupOpen(false);
-        } else {
-          setIsResellerPopupOpen(true);
-        }
-      }}>
-          <DialogContent className="max-w-sm sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Ganhe dinheiro como revendedor</DialogTitle>
-              <DialogDescription>
+        }}>
+          <DialogContent className="max-w-sm sm:max-w-md rounded-3xl border border-border/60 bg-background/95 backdrop-blur-sm shadow-lg shadow-primary/10 p-5 sm:p-6">
+            <DialogHeader className="space-y-3">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                <Sparkles className="h-3 w-3" />
+                <span>Oportunidade exclusiva</span>
+              </div>
+              <DialogTitle className="text-xl font-semibold leading-tight">
+                Ganhe dinheiro como revendedor
+              </DialogTitle>
+              <DialogDescription className="text-sm text-muted-foreground">
                 Condições especiais para você revender nossos produtos e aumentar sua renda todos os meses.
               </DialogDescription>
             </DialogHeader>
 
-            
-
-            <DialogFooter className="mt-4 flex flex-col sm:flex-row gap-2 sm:justify-end">
-              <Button variant="outline" onClick={() => {
-              const STORAGE_KEY = "reseller_popup_dismissed_at";
-              try {
-                localStorage.setItem(STORAGE_KEY, Date.now().toString());
-              } catch {
-                // ignore storage errors
-              }
-              setIsResellerPopupOpen(false);
-            }}>
+            <DialogFooter className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="self-start px-0 text-xs font-normal text-muted-foreground hover:bg-transparent hover:text-foreground"
+                onClick={() => {
+                  const STORAGE_KEY = "reseller_popup_dismissed_at";
+                  try {
+                    localStorage.setItem(STORAGE_KEY, Date.now().toString());
+                  } catch {
+                    // ignore storage errors
+                  }
+                  setIsResellerPopupOpen(false);
+                }}
+              >
                 Agora não
               </Button>
-              <Link to="/revendedor" className="sm:ml-2">
-                <Button>
+              <Link to="/revendedor" className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto text-sm font-semibold">
                   Quero ser revendedor
                 </Button>
               </Link>
