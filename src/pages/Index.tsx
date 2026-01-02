@@ -63,31 +63,38 @@ const Index = () => {
 
   useEffect(() => {
     const STORAGE_KEY = "reseller_popup_dismissed_at";
+    const INITIAL_DELAY_MS = 10_000; // 10 segundos para abrir o popup
+    const THIRTY_MINUTES = 30 * 60 * 1000;
 
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+    const timer = setTimeout(() => {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
 
-      if (!stored) {
+        // Nunca foi fechado antes: mostra após 10s
+        if (!stored) {
+          setIsResellerPopupOpen(true);
+          return;
+        }
+
+        const lastDismissed = parseInt(stored, 10);
+
+        if (Number.isNaN(lastDismissed)) {
+          setIsResellerPopupOpen(true);
+          return;
+        }
+
+        const shouldShowAgain = Date.now() - lastDismissed >= THIRTY_MINUTES;
+
+        if (shouldShowAgain) {
+          setIsResellerPopupOpen(true);
+        }
+      } catch {
+        // Em caso de erro no localStorage, ainda tentamos mostrar o popup
         setIsResellerPopupOpen(true);
-        return;
       }
+    }, INITIAL_DELAY_MS);
 
-      const lastDismissed = parseInt(stored, 10);
-
-      if (Number.isNaN(lastDismissed)) {
-        setIsResellerPopupOpen(true);
-        return;
-      }
-
-      const THIRTY_MINUTES = 30 * 60 * 1000;
-      const shouldShowAgain = Date.now() - lastDismissed >= THIRTY_MINUTES;
-
-      if (shouldShowAgain) {
-        setIsResellerPopupOpen(true);
-      }
-    } catch {
-      setIsResellerPopupOpen(true);
-    }
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSearchChange = useCallback((value: string) => {
@@ -134,12 +141,41 @@ const Index = () => {
         >
           <DialogContent className="max-w-sm sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Seja um revendedor</DialogTitle>
+              <DialogTitle>Ganhe dinheiro como revendedor</DialogTitle>
               <DialogDescription>
-                Ganhe dinheiro revendendo nossos produtos deliciosos. Veja as condições especiais para revendedores.
+                Condições especiais para você revender nossos produtos e aumentar sua renda todos os meses.
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+
+            <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-start">
+              <div className="flex-shrink-0 overflow-hidden rounded-xl bg-accent/10">
+                <img
+                  src="/placeholder.svg"
+                  alt="Ilustração de revendedor feliz com caixas de doces"
+                  className="h-32 w-32 object-cover sm:h-36 sm:w-36"
+                  loading="lazy"
+                />
+              </div>
+
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <div className="rounded-xl bg-primary/5 p-3">
+                  <p className="text-xs font-medium uppercase tracking-wide text-primary">
+                    Destaque de comissão
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-foreground">
+                    Ganhe até 20% de comissão em cada venda realizada.
+                  </p>
+                </div>
+
+                <ul className="list-disc space-y-1 pl-4">
+                  <li>Catálogo completo de produtos com alta saída.</li>
+                  <li>Material de divulgação pronto para você usar.</li>
+                  <li>Suporte dedicado para tirar dúvidas e ajudar nas vendas.</li>
+                </ul>
+              </div>
+            </div>
+
+            <DialogFooter className="mt-4 flex flex-col sm:flex-row gap-2 sm:justify-end">
               <Button
                 variant="outline"
                 onClick={() => {
