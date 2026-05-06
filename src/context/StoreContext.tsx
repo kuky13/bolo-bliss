@@ -1,5 +1,6 @@
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { StoreSettings } from "@/types";
 import defaultSettingsData from "@/config/defaultSettings.json";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +9,7 @@ import { toast } from "sonner";
 
 interface StoreContextType {
   settings: StoreSettings;
+  activeStoreId: string | null;
   updateSettings: (newSettings: StoreSettings) => Promise<void>;
   isLoaded: boolean;
   isLoading: boolean;
@@ -16,86 +18,109 @@ interface StoreContextType {
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
-const fetchStoreSettings = async (): Promise<StoreSettings> => {
-  const { data, error } = await supabase
-    .from('store_settings')
-    .select('*')
-    .maybeSingle();
-  
-  if (error) {
-    console.error('Erro ao buscar configurações:', error);
-    throw new Error(error.message);
-  }
-  
-  // Se não encontrou configurações, retorna as configurações padrão
-  if (!data) {
-    return defaultSettingsData as StoreSettings;
-  }
-  
-  // Formata os dados para o formato esperado pelo app
-  return {
-    storeName: data.store_name,
-    whatsappNumber: data.whatsapp_number || '',
-    deliveryFee: data.delivery_fee || 0,
-    freeDeliveryThreshold: data.free_delivery_threshold,
-    address: data.address,
-    welcomeMessage: data.welcome_message,
-    footerMessage: data.footer_message,
-    customCakeMessage: data.custom_cake_message,
-    logoUrl: data.logo_url,
-    freeDeliveryMessage: data.free_delivery_message,
-    showFreeDeliveryBanner: data.show_free_delivery_banner,
-    freeDeliveryFallbackEnabled: (data as any).free_delivery_fallback_enabled ?? true,
-    freeDeliveryFallbackBgColor: (data as any).free_delivery_fallback_bg_color || 'bg-store-yellow',
-    freeDeliveryFallbackTextColor: (data as any).free_delivery_fallback_text_color || 'text-store-pink',
-    freeDeliveryBanners: (data as any).free_delivery_banners || (defaultSettingsData as any).freeDeliveryBanners || [],
-    bannerRotationInterval: (data as any).banner_rotation_interval ?? (defaultSettingsData as any).bannerRotationInterval ?? 5,
-    alwaysOpen: data.always_open || false,
-    storeClosedMessage: data.store_closed_message,
-    socialMedia: data.social_media || {}
-  } as StoreSettings;
-};
-
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const queryClient = useQueryClient();
+  const { storeSlug } = useParams<{ storeSlug: string }>();
   const [isLoaded, setIsLoaded] = useState(false);
-  
-  // Usar React Query para buscar as configurações
-  const { 
-    data: settings = defaultSettingsData as StoreSettings, 
-    isLoading, 
-    error,
-    isError 
+  const [activeStoreId, setActiveStoreId] = useState<string | null>(null);
+
+  const fetchStoreBySlug = async (slug: string) => {
+    const { data, error } = await supabase
+      .from('stores')
+      .select('id, name')
+      .eq('slug', slug)
+      .single();
+
+    if (error) {
+      console.error('Erro ao buscar loja pelo slug:', error);
+      throw new Error("Loja não encontrada");
+    }
+    return data;
+  };
+
+  const fetchStoreSettings = async (storeId: string): Promise<StoreSettings> => {
+    const { data, error } = await supabase
+      .from('store_settings')
+      .select('*')
+      .eq('store_id', storeId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Erro ao buscar configurações:', error);
+      throw new Error(error.message);
+    }
+
+    if (!data) {
+      return defaultSettingsData as StoreSettings;
+    }
+
+    return {
+      storeName: data.store_name,
+      whatsappNumber: data.whatsapp_number || '',
+      delivery_fee: data.delivery_fee || 0,
+      freeDeliveryThreshold: data.free_delivery_threshold,
+      address: data.address,
+      welcomeMessage: data.welcome_message,
+      footerMessage: data.footer_message,
+      customCakeMessage: data.custom_cake_message,
+      logoUrl: data.logo_url,
+      freeDeliveryMessage: data.free_delivery_message,
+      showFreeDeliveryBanner: data.show_free_delivery_banner,
+      freeDeliveryFallbackEnabled: (data as any).free_delivery_fallback_enabled ?? true,
+      freeDeliveryFallbackBgColor: (data as any).free_delivery_fallback_bg_color || 'bg-store-yellow',
+      freeDeliveryFallbackTextColor: (data as any).free_delivery_fallback_text_color || 'text-store-pink',
+      freeDeliveryBanners: (data as any).free_delivery_banners || (defaultSettingsData as any).freeDeliveryBanners || [],
+      bannerRotationInterval: (data as any).banner_rotation_interval ?? (defaultSettingsData as any).bannerRotationInterval ?? 5,
+      alwaysOpen: data.always_open || false,
+      storeClosedMessage: data.store_closed_message,
+      socialMedia: data.social_media || {}
+    } as StoreSettings;
+  };
+
+  const {
+    data: storeInfo,
+    isLoading: isLoadingStore,
+    error: storeError
   } = useQuery({
-    queryKey: ['storeSettings'],
-    queryFn: fetchStoreSettings,
-    staleTime: 1000 * 60 * 2, // 2 minutos
-    gcTime: 1000 * 60 * 5, // 5 minutos
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
+    queryKey: ['storeInfo', storeSlug],
+    queryFn: () => fetchStoreBySlug(storeSlug!),
+    enabled: !!storeSlug,
   });
 
-  // Log de erro para debugging
-  React.useEffect(() => {
-    if (isError && error) {
-      console.error('Erro ao carregar configurações da loja:', error);
+  useEffect(() => {
+    if (storeInfo?.id) {
+      setActiveStoreId(storeInfo.id);
     }
-  }, [isError, error]);
+  }, [storeInfo]);
 
-  // Update isLoaded state when query completes
-  React.useEffect(() => {
+  const {
+    data: settings = defaultSettingsData as StoreSettings,
+    isLoading: isLoadingSettings,
+    error: settingsError,
+    isError
+  } = useQuery({
+    queryKey: ['storeSettings', activeStoreId],
+    queryFn: () => fetchStoreSettings(activeStoreId!),
+    enabled: !!activeStoreId,
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 5,
+  });
+
+  const isLoading = isLoadingStore || isLoadingSettings;
+  const error = (storeError || settingsError) as Error | null;
+
+  useEffect(() => {
     if (!isLoading) {
       setIsLoaded(true);
     }
   }, [isLoading]);
 
-  // Mutação para atualizar as configurações
   const updateSettingsMutation = useMutation({
     mutationFn: async (newSettings: StoreSettings) => {
-      // Converte para o formato esperado pelo banco de dados
+      if (!activeStoreId) throw new Error("ID da loja não definido");
+
       const dbSettings = {
+        store_id: activeStoreId,
         store_name: newSettings.storeName,
         whatsapp_number: newSettings.whatsappNumber,
         delivery_fee: newSettings.deliveryFee,
@@ -117,35 +142,33 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         social_media: newSettings.socialMedia || {}
       } as any;
 
-      // Verificar se já existem configurações
       const { data: existingSettings } = await supabase
         .from('store_settings')
         .select('id')
-        .single();
-        
+        .eq('store_id', activeStoreId)
+        .maybeSingle();
+
       if (existingSettings) {
-        // Atualizar configurações existentes
         const { data, error } = await supabase
           .from('store_settings')
           .update(dbSettings)
           .eq('id', existingSettings.id)
           .select();
-          
+
         if (error) throw new Error(error.message);
         return data;
       } else {
-        // Inserir novas configurações
         const { data, error } = await supabase
           .from('store_settings')
           .insert(dbSettings)
           .select();
-          
+
         if (error) throw new Error(error.message);
         return data;
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['storeSettings'] });
+      queryClient.invalidateQueries({ queryKey: ['storeSettings', activeStoreId] });
       toast.success("Configurações atualizadas com sucesso!");
     },
     onError: (error: Error) => {
@@ -158,12 +181,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   return (
-    <StoreContext.Provider value={{ 
-      settings, 
-      updateSettings, 
+    <StoreContext.Provider value={{
+      settings,
+      activeStoreId,
+      updateSettings,
       isLoaded,
       isLoading,
-      error: error as Error | null
+      error
     }}>
       {children}
     </StoreContext.Provider>

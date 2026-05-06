@@ -1,9 +1,10 @@
 
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { Product } from "@/types";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useStore } from "./StoreContext";
 
 interface ProductContextType {
   products: Product[];
@@ -18,10 +19,13 @@ interface ProductContextType {
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
-const fetchProducts = async (): Promise<Product[]> => {
+const fetchProducts = async (storeId: string | null): Promise<Product[]> => {
+  if (!storeId) return [];
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
+    .eq('store_id', storeId)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -65,12 +69,14 @@ const extractFilePathFromUrl = (url: string): string | null => {
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Use React Query para gerenciar dados
   const queryClient = useQueryClient();
-  
+  const { activeStoreId } = useStore();
+
   const { data: products = [], isLoading, error, isError } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProducts,
+    queryKey: ['products', activeStoreId],
+    queryFn: () => fetchProducts(activeStoreId),
+    enabled: !!activeStoreId,
     staleTime: 1000 * 60 * 2, // 2 minutos
-    gcTime: 1000 * 60 * 5, // 5 minutos  
+    gcTime: 1000 * 60 * 5, // 5 minutos
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
     refetchOnWindowFocus: true,
@@ -78,7 +84,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
 
   // Log de erro para debugging
-  React.useEffect(() => {
+  useEffect(() => {
     if (isError && error) {
       console.error('Erro ao carregar produtos:', error);
     }
@@ -87,8 +93,11 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Mutação para adicionar produto
   const addProductMutation = useMutation({
     mutationFn: async (product: Omit<Product, "id">) => {
+      if (!activeStoreId) throw new Error("ID da loja não definido");
+
       // Transform the product to match Supabase schema
       const dbProduct = {
+        store_id: activeStoreId,
         name: product.name,
         description: product.description,
         price: product.price,
@@ -104,12 +113,12 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         .insert(dbProduct)
         .select()
         .single();
-      
+
       if (error) throw new Error(error.message);
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['products', activeStoreId] });
       toast.success("Produto adicionado com sucesso!");
     },
     onError: (error: Error) => {
@@ -145,7 +154,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['products', activeStoreId] });
       toast.success("Produto atualizado com sucesso!");
     },
     onError: (error: Error) => {
@@ -199,7 +208,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['products', activeStoreId] });
       toast.success("Produto removido com sucesso!");
     },
     onError: (error: Error) => {

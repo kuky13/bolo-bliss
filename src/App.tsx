@@ -51,66 +51,69 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Public Routes */}
+        {/* Landing/Home Route */}
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/pending" element={<PaymentPending />} />
-        <Route path="/payment/failure" element={<PaymentFailure />} />
-        <Route path="/easteregg" element={<GameEasterEgg />} />
-        <Route path="/revendedor" element={<Revendedor />} />
-        
-        {/* Affiliate Routes (legacy) */}
-        <Route path="/afiliado/:code" element={<AffiliateTracker />} />
-        
-        {/* ValeDoce Routes */}
-        <Route path="/ysa/:slug" element={<YsaAffiliateTracker />} />
-        <Route path="/y/creditos" element={<AffiliateCredits />} />
-        <Route path="/y/settings" element={<AffiliateSettings />} />
 
-        {/* Admin Routes */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/products"
-          element={
-            <ProtectedRoute>
-              <Products />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/settings"
-          element={
-            <ProtectedRoute>
-              <Settings />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/orders"
-          element={
-            <ProtectedRoute>
-              <Orders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/valedoce"
-          element={
-            <ProtectedRoute>
-              <ValeDoceReport />
-            </ProtectedRoute>
-          }
-        />
+        {/* Multi-store Routes */}
+        <Route path="/:storeSlug">
+          <Route index element={<Index />} />
+          <Route path="cart" element={<Cart />} />
+          <Route path="checkout" element={<Checkout />} />
+          <Route path="payment/success" element={<PaymentSuccess />} />
+          <Route path="payment/pending" element={<PaymentPending />} />
+          <Route path="payment/failure" element={<PaymentFailure />} />
+          <Route path="easteregg" element={<GameEasterEgg />} />
+          <Route path="revendedor" element={<Revendedor />} />
+
+          {/* Affiliate Routes */}
+          <Route path="afiliado/:code" element={<AffiliateTracker />} />
+          <Route path="ysa/:slug" element={<YsaAffiliateTracker />} />
+          <Route path="y/creditos" element={<AffiliateCredits />} />
+          <Route path="y/settings" element={<AffiliateSettings />} />
+
+          {/* Admin Routes */}
+          <Route
+            path="admin"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin/products"
+            element={
+              <ProtectedRoute>
+                <Products />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin/orders"
+            element={
+              <ProtectedRoute>
+                <Orders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="admin/valedoce"
+            element={
+              <ProtectedRoute>
+                <ValeDoceReport />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
 
         <Route path="*" element={<NotFound />} />
       </Routes>
