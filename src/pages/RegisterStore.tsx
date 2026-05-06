@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Cake, Loader2, Store, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Loader2, Store, ArrowRight, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const RegisterStore = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -113,10 +114,7 @@ const RegisterStore = () => {
   return (
     <div className="min-h-screen bg-muted/30 flex flex-col items-center justify-center p-6">
       <Link to="/" className="flex items-center gap-2 mb-8 group">
-        <div className="bg-primary p-2 rounded-xl shadow-pop group-hover:scale-110 transition-transform">
-          <Cake className="text-white w-6 h-6" />
-        </div>
-        <span className="text-2xl font-bold text-gradient-pink">Bolo Bliss</span>
+        <span className="text-3xl font-bold text-gradient-pink">Bolo Biz</span>
       </Link>
 
       <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8 items-center">
@@ -163,7 +161,7 @@ const RegisterStore = () => {
                   <Label htmlFor="storeSlug">Endereço da Loja (URL)</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
-                      bolo-bliss.com/
+                      bolobiz.com/
                     </span>
                     <Input
                       id="storeSlug"
@@ -194,15 +192,25 @@ const RegisterStore = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Senha</Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="••••••••"
-                    required
-                    value={formData.password}
-                    onChange={handleInputChange}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      required
+                      className="pr-10"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
               </div>
             </CardContent>

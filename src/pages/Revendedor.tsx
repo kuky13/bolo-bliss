@@ -12,7 +12,7 @@ const Revendedor: React.FC = () => {
   const { settings } = useStore();
 
   const defaultMessage =
-    "Olá, tenho interesse em ser revendedor(a) dos bolos de pote e doces do Cantinho da Ysa. Pode me passar mais informações?";
+    "Olá, tenho interesse em ser revendedor(a) dos bolos de pote e doces do Bolo Biz. Pode me passar mais informações?";
   const encodedMessage = encodeURIComponent(defaultMessage);
 
   const whatsappLink = settings.whatsappNumber
@@ -102,7 +102,7 @@ const Revendedor: React.FC = () => {
                 <ul className="list-disc list-inside space-y-1">
                   <li>Dicas de como vender mais na sua região</li>
                   <li>Sugestões de kits e combinações de produtos</li>
-                  <li>Contato direto com a Ysa pelo WhatsApp</li>
+                  <li>Contato direto com a nossa equipe pelo WhatsApp</li>
                 </ul>
               </CardContent>
             </Card>

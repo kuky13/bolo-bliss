@@ -22,10 +22,7 @@ const Landing = () => {
       <nav className="fixed top-0 w-full z-50 glass-morphism border-b border-border/50 px-6 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="bg-primary p-2 rounded-xl shadow-pop">
-              <Cake className="text-white w-6 h-6" />
-            </div>
-            <span className="text-xl font-bold text-gradient-pink">Bolo Bliss</span>
+            <span className="text-xl font-bold text-gradient-pink">Bolo Biz</span>
           </div>
           <div className="flex gap-4">
             <Link to="/login">
@@ -146,7 +143,7 @@ const Landing = () => {
             <CardContent className="p-12 md:p-20 text-center relative z-10">
               <h2 className="text-3xl md:text-5xl font-bold mb-8">Comece a vender hoje mesmo</h2>
               <p className="text-white/80 text-xl mb-12">
-                Junte-se a centenas de confeiteiras que profissionalizaram suas vendas com o Bolo Bliss.
+                Junte-se a centenas de confeiteiras que profissionalizaram suas vendas com o Bolo Biz.
               </p>
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <Link to="/register-store">
@@ -175,12 +172,9 @@ const Landing = () => {
       <footer className="py-12 px-6 border-t border-border/50 bg-muted/20">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-2">
-            <div className="bg-primary/20 p-1.5 rounded-lg">
-              <Cake className="text-primary w-5 h-5" />
-            </div>
-            <span className="text-lg font-bold">Bolo Bliss</span>
+            <span className="text-lg font-bold">Bolo Biz</span>
           </div>
-          <p className="text-muted-foreground">© 2024 Bolo Bliss - Plataforma de Catálogos Digitais</p>
+          <p className="text-muted-foreground">© 2024 Bolo Biz - Plataforma de Catálogos Digitais</p>
           <div className="flex gap-6 text-muted-foreground">
             <a href="#" className="hover:text-primary transition-colors">Privacidade</a>
             <a href="#" className="hover:text-primary transition-colors">Termos</a>
