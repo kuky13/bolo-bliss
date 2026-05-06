@@ -12,6 +12,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   isLoading: boolean;
+  userStores: any[];
+  isStoresLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,6 +24,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isRoleLoading, setIsRoleLoading] = useState(false);
+  const [userStores, setUserStores] = useState<any[]>([]);
+  const [isStoresLoading, setIsStoresLoading] = useState(false);
 
   // Inicializar sessão (sem deadlock) e ouvir mudanças de auth
   useEffect(() => {
@@ -38,7 +42,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(nextSession);
       setCurrentUser(nextSession?.user ?? null);
       setIsAdmin(false);
+      setUserStores([]);
       setIsRoleLoading(!!nextSession?.user);
+      setIsStoresLoading(!!nextSession?.user);
       setIsLoading(false);
     });
 
@@ -55,6 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(existingSession);
         setCurrentUser(existingSession?.user ?? null);
         setIsRoleLoading(!!existingSession?.user);
+        setIsStoresLoading(!!existingSession?.user);
       } catch (e) {
         console.error("Erro ao recuperar sessão:", e);
       } finally {
@@ -67,6 +74,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       subscription.unsubscribe();
     };
   }, []);
+
+  // Checar lojas do usuário
+  useEffect(() => {
+    if (!currentUser) {
+      setUserStores([]);
+      setIsStoresLoading(false);
+      return;
+    }
+
+    const fetchUserStores = async () => {
+      setIsStoresLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('store_users')
+          .select('role, stores(id, name, slug)')
+          .eq('user_id', currentUser.id);
+
+        if (error) throw error;
+
+        const stores = data?.map(item => ({
+          ...item.stores,
+          role: item.role
+        })) || [];
+
+        setUserStores(stores);
+      } catch (e) {
+        console.error("Erro ao buscar lojas do usuário:", e);
+      } finally {
+        setIsStoresLoading(false);
+      }
+    };
+
+    fetchUserStores();
+  }, [currentUser?.id]);
 
   // Checar role fora do onAuthStateChange (evita loop/deadlock)
   useEffect(() => {
@@ -173,7 +214,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         isAuthenticated: !!currentUser,
         isAdmin,
-        isLoading: isLoading || isRoleLoading,
+        isLoading: isLoading || isRoleLoading || isStoresLoading,
+        userStores,
+        isStoresLoading,
       }}
     >
       {children}

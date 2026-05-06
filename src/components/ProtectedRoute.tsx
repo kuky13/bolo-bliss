@@ -1,6 +1,6 @@
 
 import { useAuth } from "@/context/AuthContext";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useParams } from "react-router-dom";
 import GhostLoader from "@/components/ui/ghost-loader";
 
 interface ProtectedRouteProps {
@@ -8,10 +8,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLoading, isAdmin } = useAuth();
+  const { isAuthenticated, isLoading, userStores } = useAuth();
+  const { storeSlug } = useParams<{ storeSlug: string }>();
   const location = useLocation();
 
-  console.log("ProtectedRoute - isLoading:", isLoading, "isAuthenticated:", isAuthenticated, "isAdmin:", isAdmin);
+  console.log("ProtectedRoute - isLoading:", isLoading, "isAuthenticated:", isAuthenticated, "storeSlug:", storeSlug);
 
   if (isLoading) {
     return (
@@ -23,17 +24,20 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   if (!isAuthenticated) {
     console.log("Usuário não autenticado, redirecionando para login");
-    // Redirect to login and remember where they were trying to go
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (!isAdmin) {
-    console.log("Usuário autenticado mas não é admin, redirecionando para home");
-    // Usuário está autenticado mas não é admin
-    return <Navigate to="/" state={{ message: "Acesso restrito a administradores" }} replace />;
+  // Se estivermos em uma rota de loja (/admin)
+  if (storeSlug) {
+    const hasAccess = userStores.some(store => store.slug === storeSlug);
+
+    if (!hasAccess) {
+      console.log(`Usuário não tem acesso à loja ${storeSlug}, redirecionando`);
+      return <Navigate to="/" state={{ message: "Você não tem permissão para acessar esta loja" }} replace />;
+    }
   }
 
-  console.log("Acesso liberado para admin");
+  console.log("Acesso liberado");
   return <>{children}</>;
 };
 

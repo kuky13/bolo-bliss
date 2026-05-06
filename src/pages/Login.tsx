@@ -41,19 +41,25 @@ const Login = () => {
   const [affiliateError, setAffiliateError] = useState<string | null>(null);
   const [isAffiliateLoading, setIsAffiliateLoading] = useState(false);
 
-  const { login, isAuthenticated, isAdmin } = useAuth();
+  const { login, isAuthenticated, userStores, isStoresLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { settings } = useStore();
 
-  const from = (location.state as LocationState)?.from?.pathname || "/admin";
+  const from = (location.state as LocationState)?.from?.pathname;
   const message = (location.state as LocationState)?.message;
 
   useEffect(() => {
-    if (isAuthenticated && isAdmin) {
-      navigate("/admin");
+    if (isAuthenticated && !isStoresLoading && userStores.length > 0) {
+      // Se tiver uma origem específica (que o ProtectedRoute guardou), vai pra ela
+      if (from && from !== "/admin") {
+        navigate(from, { replace: true });
+      } else {
+        // Senão vai para a primeira loja dele
+        navigate(`/${userStores[0].slug}/admin`, { replace: true });
+      }
     }
-  }, [isAuthenticated, isAdmin, navigate]);
+  }, [isAuthenticated, isStoresLoading, userStores, navigate, from]);
 
   useEffect(() => {
     if (message) {
