@@ -8,6 +8,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { AnimatePresence } from "framer-motion";
 
 // Lazy Loaded Pages
+const Landing = lazy(() => import("./pages/Landing"));
+const RegisterStore = lazy(() => import("./pages/RegisterStore"));
 const Index = lazy(() => import("./pages/Index"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Login = lazy(() => import("./pages/Login"));
@@ -51,8 +53,9 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Landing/Home Route */}
-        <Route path="/" element={<Index />} />
+        {/* Public Landing Routes */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/register-store" element={<RegisterStore />} />
         <Route path="/login" element={<Login />} />
 
         {/* Multi-store Routes */}
