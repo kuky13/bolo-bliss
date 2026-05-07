@@ -29,10 +29,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .from('stores')
       .select('id, name')
       .eq('slug', slug)
-      .single();
+      .maybeSingle();
 
-    if (error) {
-      console.error('Erro ao buscar loja pelo slug:', error);
+    if (error || !data) {
+      if (error) console.error('Erro ao buscar loja pelo slug:', error);
       throw new Error("Loja não encontrada");
     }
     return data;

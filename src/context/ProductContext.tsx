@@ -171,7 +171,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
           .from('products')
           .select('image_url')
           .eq('id', id)
-          .single();
+          .maybeSingle();
 
         // Se houver uma imagem associada ao produto, tentamos excluí-la do storage
         if (product?.image_url) {

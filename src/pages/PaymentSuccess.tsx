@@ -32,7 +32,7 @@ const PaymentSuccess = () => {
         .from("orders")
         .select("order_code, customer_name, customer_email, total, payment_status")
         .eq("order_code", orderCode)
-        .single();
+        .maybeSingle();
 
       if (!error && data) {
         setOrder(data);

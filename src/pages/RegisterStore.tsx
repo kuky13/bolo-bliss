@@ -114,7 +114,7 @@ const RegisterStore = () => {
   return (
     <div className="min-h-screen bg-muted/30 flex flex-col items-center justify-center p-6">
       <Link to="/" className="flex items-center gap-2 mb-8 group">
-        <span className="text-3xl font-bold text-gradient-pink">Bolo Biz</span>
+        <span className="text-3xl font-bold text-gradient-pink">Doce Vitrine</span>
       </Link>
 
       <div className="w-full max-w-4xl grid md:grid-cols-2 gap-8 items-center">

@@ -12,7 +12,7 @@ const Revendedor: React.FC = () => {
   const { settings } = useStore();
 
   const defaultMessage =
-    "Olá, tenho interesse em ser revendedor(a) dos bolos de pote e doces do Bolo Biz. Pode me passar mais informações?";
+    "Olá, tenho interesse em ser revendedor(a) dos bolos de pote e doces do Doce Vitrine. Pode me passar mais informações?";
   const encodedMessage = encodeURIComponent(defaultMessage);
 
   const whatsappLink = settings.whatsappNumber

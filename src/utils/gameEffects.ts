@@ -77,6 +77,7 @@ export const createParticle = (x: number, y: number, color: string) => {
 };
 
 export const createSuccessParticles = (element: HTMLElement) => {
+  if (!element) return;
   const rect = element.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;

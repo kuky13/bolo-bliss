@@ -44,7 +44,7 @@ const PaymentPending = () => {
         "order_code, customer_name, total, payment_status, payment_method, pix_qr_code, pix_qr_code_base64, mercadopago_preference_id, pix_expires_at"
       )
       .eq("order_code", orderCode)
-      .single();
+      .maybeSingle();
 
     if (!error && data) {
       setOrder(data);

@@ -97,7 +97,7 @@ const Login = () => {
       if (error) throw error;
 
       // Verificar se o usuário é afiliado
-      const { data: affiliate } = await supabase.from("affiliates").select("*").eq("user_id", data.user.id).single();
+      const { data: affiliate } = await supabase.from("affiliates").select("*").eq("user_id", data.user.id).maybeSingle();
 
       if (affiliate) {
         toast.success("Login realizado com sucesso!");

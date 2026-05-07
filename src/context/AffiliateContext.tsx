@@ -83,7 +83,7 @@ export const AffiliateProvider: React.FC<AffiliateProviderProps> = ({ children }
         .select("*")
         .eq("code", normalizedCode)
         .eq("active", true)
-        .single();
+        .maybeSingle();
 
       if (error || !affiliate) {
         toast.error("Código de afiliado não encontrado ou inativo");

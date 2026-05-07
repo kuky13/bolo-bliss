@@ -103,12 +103,10 @@ export const ValeDoceProvider: React.FC<ValeDoceProviderProps> = ({ children }) 
           .from("affiliates")
           .select("*")
           .eq("user_id", authUserId)
-          .single();
+          .maybeSingle();
 
         if (error) {
-          if (error.code !== "PGRST116") {
-            console.error("Erro ao carregar afiliado:", error);
-          }
+          console.error("Erro ao carregar afiliado:", error);
           return;
         }
 

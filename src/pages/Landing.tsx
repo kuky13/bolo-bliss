@@ -22,7 +22,7 @@ const Landing = () => {
       <nav className="fixed top-0 w-full z-50 glass-morphism border-b border-border/50 px-6 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gradient-pink">Bolo Biz</span>
+            <span className="text-xl font-bold text-gradient-pink">Doce Vitrine</span>
           </div>
           <div className="flex gap-4">
             <Link to="/login">
@@ -174,7 +174,7 @@ const Landing = () => {
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold">Bolo Biz</span>
           </div>
-          <p className="text-muted-foreground">© 2024 Bolo Biz - Plataforma de Catálogos Digitais</p>
+          <p className="text-muted-foreground">© 2024 Doce Vitrine - Plataforma de Catálogos Digitais</p>
           <div className="flex gap-6 text-muted-foreground">
             <a href="#" className="hover:text-primary transition-colors">Privacidade</a>
             <a href="#" className="hover:text-primary transition-colors">Termos</a>
