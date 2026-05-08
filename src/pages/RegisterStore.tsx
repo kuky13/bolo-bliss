@@ -67,19 +67,20 @@ const RegisterStore = () => {
 
       const userId = authData.user.id;
 
-      // 2.5 Fazer login automático para estabelecer sessão
-      const { error: loginError } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (loginError) {
-        console.warn("Aviso ao fazer login automático:", loginError);
-        // Continuar mesmo se o login falhar (pode ser por email não confirmado)
+      // 2.5 Estabelecer sessão se signUp retornou tokens
+      // (acontece quando email confirmation está desabilitado ou em modo automático)
+      if (authData.session) {
+        await supabase.auth.setSession({
+          access_token: authData.session.access_token,
+          refresh_token: authData.session.refresh_token,
+        });
+        console.log("Sessão estabelecida via signUp");
+      } else {
+        console.log("SignUp sem sessão - email confirmation pode estar habilitado");
       }
 
-      // Aguardar um pouco para garantir que a sessão está pronta
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Aguardar propagação do user em auth.users
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       // 3. Criar Loja usando função RPC (contorna problemas de RLS)
       const { data: rpcResult, error: rpcError } = await supabase
