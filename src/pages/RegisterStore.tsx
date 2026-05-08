@@ -38,17 +38,22 @@ const RegisterStore = () => {
     setIsLoading(true);
 
     try {
-      // 1. Validar slug
-      const { data: existingStore } = await supabase
-        .from('stores')
-        .select('id')
-        .eq('slug', formData.storeSlug)
-        .maybeSingle();
+      // 1. Validar slug (permitir erro 401 pois pode ser anon)
+      try {
+        const { data: existingStore } = await supabase
+          .from('stores')
+          .select('id')
+          .eq('slug', formData.storeSlug)
+          .maybeSingle();
 
-      if (existingStore) {
-        toast.error("Este endereço de loja já está em uso. Tente outro.");
-        setIsLoading(false);
-        return;
+        if (existingStore) {
+          toast.error("Este endereço de loja já está em uso. Tente outro.");
+          setIsLoading(false);
+          return;
+        }
+      } catch (slugError) {
+        // Se houver erro na validação de slug, continuar mesmo assim
+        console.warn("Aviso ao validar slug:", slugError);
       }
 
       // 2. Criar Usuário
@@ -62,42 +67,38 @@ const RegisterStore = () => {
 
       const userId = authData.user.id;
 
-      // 3. Criar Loja
-      const { data: storeData, error: storeError } = await supabase
-        .from('stores')
-        .insert({
-          name: formData.storeName,
-          slug: formData.storeSlug,
-          owner_id: userId,
-          active: true
-        })
-        .select()
-        .single();
+      // 2.5 Fazer login automático para estabelecer sessão
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      if (storeError) throw storeError;
+      if (loginError) {
+        console.warn("Aviso ao fazer login automático:", loginError);
+        // Continuar mesmo se o login falhar (pode ser por email não confirmado)
+      }
 
-      // 4. Vincular Usuário como Owner
-      const { error: userStoreError } = await supabase
-        .from('store_users')
-        .insert({
-          user_id: userId,
-          store_id: storeData.id,
-          role: 'owner'
+      // Aguardar um pouco para garantir que a sessão está pronta
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // 3. Criar Loja usando função RPC (contorna problemas de RLS)
+      const { data: rpcResult, error: rpcError } = await supabase
+        .rpc('register_store', {
+          p_store_name: formData.storeName,
+          p_store_slug: formData.storeSlug,
+          p_user_id: userId
         });
 
-      if (userStoreError) throw userStoreError;
+      if (rpcError) {
+        console.error("Erro ao criar loja via RPC:", rpcError);
+        throw new Error(rpcError.message || "Erro ao criar loja");
+      }
 
-      // 5. Inicializar Configurações da Loja
-      const { error: settingsError } = await supabase
-        .from('store_settings')
-        .insert({
-          store_id: storeData.id,
-          store_name: formData.storeName,
-          welcome_message: `Bem-vindo à ${formData.storeName}! 🎂`,
-          always_open: true
-        });
+      if (!rpcResult || rpcResult.error) {
+        throw new Error(rpcResult?.error || "Erro desconhecido ao criar loja");
+      }
 
-      if (settingsError) throw settingsError;
+      console.log("Loja criada com sucesso via RPC:", rpcResult);
 
       toast.success("Sua loja foi criada com sucesso!");
 
@@ -105,7 +106,20 @@ const RegisterStore = () => {
       navigate(`/${formData.storeSlug}/admin/settings`);
     } catch (error: any) {
       console.error("Erro no registro:", error);
-      toast.error(error.message || "Ocorreu um erro ao criar sua loja.");
+
+      let errorMessage = "Ocorreu um erro ao criar sua loja.";
+
+      if (error.code === '42501') {
+        errorMessage = "Erro de permissão. Tente novamente ou contate o suporte.";
+      } else if (error.message?.includes("duplicate key") || error.code === '23505') {
+        errorMessage = "Este endereço de loja já está em uso.";
+      } else if (error.message?.includes("invalid input")) {
+        errorMessage = "Dados inválidos. Verifique os campos.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

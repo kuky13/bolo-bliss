@@ -24,17 +24,41 @@ const CouponContext = createContext<CouponContextType | undefined>(undefined);
 // Função para buscar cupons do Supabase
 const fetchCoupons = async (): Promise<Coupon[]> => {
   console.log("Buscando cupons do Supabase...");
-  
+
   const { data, error } = await supabase
     .from('coupons')
     .select('*')
+    .eq('active', true)
+    .gt('expiry_date', new Date().toISOString().split('T')[0])
     .order('code');
-  
+
   if (error) {
-    console.error("Erro ao buscar cupons:", error);
-    throw new Error(error.message);
+    console.error("Erro ao buscar cupons:", error.message, error.code, error.details);
+    // Se houver erro de RLS, tentar novamente sem o filtro de expiração
+    const { data: allData, error: fallbackError } = await supabase
+      .from('coupons')
+      .select('*')
+      .eq('active', true)
+      .order('code');
+
+    if (fallbackError) {
+      console.error("Erro ao buscar cupons (fallback):", fallbackError);
+      throw new Error(fallbackError.message);
+    }
+
+    return (allData || []).map((item: any) => ({
+      code: item.code,
+      discountType: item.discount_type as "percentage" | "fixed",
+      discountValue: Number(item.discount_value),
+      minOrderValue: Number(item.min_order_value) || 0,
+      active: Boolean(item.active),
+      description: item.description || '',
+      expiryDate: item.expiry_date || '',
+      usageLimit: Number(item.usage_limit) || 0,
+      usageCount: Number(item.usage_count) || 0
+    }));
   }
-  
+
   console.log("Cupons buscados:", data);
   
   // Converter do formato do banco para o formato da aplicação

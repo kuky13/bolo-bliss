@@ -48,24 +48,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(false);
     });
 
-    // 2) Carregar sessão existente
+    // 2) Carregar sessão existente com retry
     (async () => {
-      try {
-        const {
-          data: { session: existingSession },
-        } = await supabase.auth.getSession();
+      let retries = 3;
+      let success = false;
 
-        if (!mounted) return;
+      while (retries > 0 && !success) {
+        try {
+          const {
+            data: { session: existingSession },
+          } = await supabase.auth.getSession();
 
-        console.log("Existing session found:", existingSession?.user?.email);
-        setSession(existingSession);
-        setCurrentUser(existingSession?.user ?? null);
-        setIsRoleLoading(!!existingSession?.user);
-        setIsStoresLoading(!!existingSession?.user);
-      } catch (e) {
-        console.error("Erro ao recuperar sessão:", e);
-      } finally {
-        if (mounted) setIsLoading(false);
+          if (!mounted) return;
+
+          console.log("Existing session found:", existingSession?.user?.email);
+          setSession(existingSession);
+          setCurrentUser(existingSession?.user ?? null);
+          setIsRoleLoading(!!existingSession?.user);
+          setIsStoresLoading(!!existingSession?.user);
+          success = true;
+        } catch (e) {
+          console.error("Erro ao recuperar sessão (tentativa " + (4 - retries) + "):", e);
+          retries--;
+          if (retries > 0) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        }
+      }
+
+      if (mounted) {
+        setIsLoading(false);
       }
     })();
 
