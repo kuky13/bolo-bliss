@@ -105,7 +105,20 @@ const RegisterStore = () => {
       navigate(`/${formData.storeSlug}/admin/settings`);
     } catch (error: any) {
       console.error("Erro no registro:", error);
-      toast.error(error.message || "Ocorreu um erro ao criar sua loja.");
+
+      let errorMessage = "Ocorreu um erro ao criar sua loja.";
+
+      if (error.code === '42501') {
+        errorMessage = "Erro de permissão. Tente novamente ou contate o suporte.";
+      } else if (error.message?.includes("duplicate key")) {
+        errorMessage = "Este endereço de loja já está em uso.";
+      } else if (error.message?.includes("invalid input")) {
+        errorMessage = "Dados inválidos. Verifique os campos.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
