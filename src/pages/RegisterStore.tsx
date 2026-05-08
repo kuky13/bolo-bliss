@@ -81,42 +81,24 @@ const RegisterStore = () => {
       // Aguardar um pouco para garantir que a sessão está pronta
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // 3. Criar Loja
-      const { data: storeData, error: storeError } = await supabase
-        .from('stores')
-        .insert({
-          name: formData.storeName,
-          slug: formData.storeSlug,
-          owner_id: userId,
-          active: true
-        })
-        .select()
-        .single();
-
-      if (storeError) throw storeError;
-
-      // 4. Vincular Usuário como Owner
-      const { error: userStoreError } = await supabase
-        .from('store_users')
-        .insert({
-          user_id: userId,
-          store_id: storeData.id,
-          role: 'owner'
+      // 3. Criar Loja usando função RPC (contorna problemas de RLS)
+      const { data: rpcResult, error: rpcError } = await supabase
+        .rpc('register_store', {
+          p_store_name: formData.storeName,
+          p_store_slug: formData.storeSlug,
+          p_user_id: userId
         });
 
-      if (userStoreError) throw userStoreError;
+      if (rpcError) {
+        console.error("Erro ao criar loja via RPC:", rpcError);
+        throw new Error(rpcError.message || "Erro ao criar loja");
+      }
 
-      // 5. Inicializar Configurações da Loja
-      const { error: settingsError } = await supabase
-        .from('store_settings')
-        .insert({
-          store_id: storeData.id,
-          store_name: formData.storeName,
-          welcome_message: `Bem-vindo à ${formData.storeName}! 🎂`,
-          always_open: true
-        });
+      if (!rpcResult || rpcResult.error) {
+        throw new Error(rpcResult?.error || "Erro desconhecido ao criar loja");
+      }
 
-      if (settingsError) throw settingsError;
+      console.log("Loja criada com sucesso via RPC:", rpcResult);
 
       toast.success("Sua loja foi criada com sucesso!");
 
