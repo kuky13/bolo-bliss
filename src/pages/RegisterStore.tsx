@@ -67,6 +67,9 @@ const RegisterStore = () => {
 
       const userId = authData.user.id;
 
+      // Aguardar um pouco para garantir que a sessão está pronta
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // 3. Criar Loja
       const { data: storeData, error: storeError } = await supabase
         .from('stores')
