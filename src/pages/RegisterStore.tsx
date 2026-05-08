@@ -67,8 +67,19 @@ const RegisterStore = () => {
 
       const userId = authData.user.id;
 
+      // 2.5 Fazer login automático para estabelecer sessão
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (loginError) {
+        console.warn("Aviso ao fazer login automático:", loginError);
+        // Continuar mesmo se o login falhar (pode ser por email não confirmado)
+      }
+
       // Aguardar um pouco para garantir que a sessão está pronta
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       // 3. Criar Loja
       const { data: storeData, error: storeError } = await supabase
