@@ -38,17 +38,22 @@ const RegisterStore = () => {
     setIsLoading(true);
 
     try {
-      // 1. Validar slug
-      const { data: existingStore } = await supabase
-        .from('stores')
-        .select('id')
-        .eq('slug', formData.storeSlug)
-        .maybeSingle();
+      // 1. Validar slug (permitir erro 401 pois pode ser anon)
+      try {
+        const { data: existingStore } = await supabase
+          .from('stores')
+          .select('id')
+          .eq('slug', formData.storeSlug)
+          .maybeSingle();
 
-      if (existingStore) {
-        toast.error("Este endereço de loja já está em uso. Tente outro.");
-        setIsLoading(false);
-        return;
+        if (existingStore) {
+          toast.error("Este endereço de loja já está em uso. Tente outro.");
+          setIsLoading(false);
+          return;
+        }
+      } catch (slugError) {
+        // Se houver erro na validação de slug, continuar mesmo assim
+        console.warn("Aviso ao validar slug:", slugError);
       }
 
       // 2. Criar Usuário
@@ -110,7 +115,7 @@ const RegisterStore = () => {
 
       if (error.code === '42501') {
         errorMessage = "Erro de permissão. Tente novamente ou contate o suporte.";
-      } else if (error.message?.includes("duplicate key")) {
+      } else if (error.message?.includes("duplicate key") || error.code === '23505') {
         errorMessage = "Este endereço de loja já está em uso.";
       } else if (error.message?.includes("invalid input")) {
         errorMessage = "Dados inválidos. Verifique os campos.";
